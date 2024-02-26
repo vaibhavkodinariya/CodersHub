@@ -14,6 +14,10 @@ export const siteConfig = {
       name: "CPP | Login",
       description: "Page for Logging In to Candidate Placement Process Web-App",
     },
+    register: {
+      name: "CPP | Register",
+      description: "Page for SignUp In to Candidate Placement Process Web-App",
+    },
   },
   links: {
     twitter: "https://twitter.com/shadcn",
