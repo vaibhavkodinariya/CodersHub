@@ -5,45 +5,36 @@ import { Checkbox } from "@/components/ui/checkbox";
 import Link from "next/link";
 import { Label } from "@/components/ui/label";
 
-export default function Login() {
+export default function ResetPassword() {
     return (
         <div className="flex items-center justify-center h-screen bg-cover bg-center relative" style={{ backgroundImage: "linear-gradient(rgba(0,0,0,0.5), rgba(0,0,0,0.5)), url('/login.jpg')" }} >
-            < div className="bg-white rounded-xl overflow-hidden shadow-xl flex flex-col sm:flex-row" >
-                <div className="flex-1 p-6">
-                    <h4 className="font-semibold mb-6 text-center">Welcome to CodersHub</h4>
-                    <hr />
-                    <br />
-                    <form className="grid gap-1">
-                        <div className="mb-4">
-                            <Label className="block text-gray-600 text-sm font-medium mb-2">Email address</Label>
+            <div className="bg-white rounded-xl overflow-hidden shadow-xl flex flex-col sm:flex-row" >
+                <div className="flex-1 mt-16 mb-16 p-6">
+                    <h4 className="font-medium border-blue-200 border-b-2 text-lg mb-2 text-center h-12 bg-blue-100">Reset Password</h4>
+                    <form className="m-5 grid">
+                        <div className="mb-2">
+                            <Label className="block text-gray-600 text-sm font-medium mb-2">Enter New Password</Label>
                             <Input
                                 type="text"
                                 className="border border-gray-300 p-2 w-full rounded-md focus:outline-none"
-                                placeholder="Enter Email"
+                                placeholder="Enter New Password"
                             />
                         </div>
                         <div className="mb-4">
-                            <Label className="block text-gray-600 text-sm font-medium mb-2">Password</Label>
+                            <Label className="block text-gray-600 text-sm font-medium mb-2">Confirm New Password</Label>
                             <Input
                                 type="password"
                                 className="border border-gray-300 p-2 w-full rounded-md focus:outline-none"
-                                placeholder="Enter Password"
+                                placeholder="Confirm New Password"
                             />
-                        </div>
-                        <div>
-                            <Checkbox className="float-start mr-2" /><Label className="text-sm font-serif float-left">Keep me logged in</Label> <Link href={""} className="text-sm font-serif float-end">Forgot password?</Link>
                         </div>
                         <Button
                             type="submit"
-                            className="bg-blue-500 text-white w-full py-2 rounded-md hover:bg-blue-600 focus:outline-none"
+                            className="bg-blue-500 text-white text-xs w-32 py-2 rounded-full hover:bg-blue-600 focus:outline-none"
                         >
-                            Login
+                            Change Password
                         </Button>
                     </form>
-                    <hr />
-                    <div className="text-center">
-                        <Label className="text-sm font-serif">Your Organisation not Registered?</Label> <Link href={""} className="text-sm font-serif text-blue-500">Register Organisation</Link>
-                    </div>
                 </div>
                 <div className="flex-1 order-1 sm:order-2">
                     <Image
@@ -55,7 +46,7 @@ export default function Login() {
                         className="w-full h-full object-cover"
                     />
                 </div>
-            </div >
+            </div>
         </ div >
     );
 } 
