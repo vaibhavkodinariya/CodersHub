@@ -18,6 +18,11 @@ export const siteConfig = {
       name: "CPP | Register",
       description: "Page for SignUp In to Candidate Placement Process Web-App",
     },
+    resetPassword: {
+      name: "CPP | Reset-Password",
+      description:
+        "Page for Reset Password In to Candidate Placement Process Web-App",
+    },
   },
   links: {
     twitter: "https://twitter.com/shadcn",
