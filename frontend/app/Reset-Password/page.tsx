@@ -11,8 +11,8 @@ export default function ResetPassword() {
             <div className="bg-white rounded-xl overflow-hidden shadow-xl flex flex-col sm:flex-row" >
                 <div className="flex-1 mt-16 mb-16 p-6">
                     <h4 className="font-medium border-blue-200 border-b-2 text-lg mb-2 text-center h-12 bg-blue-100">Reset Password</h4>
-                    <form className="m-2 grid gap-1">
-                        <div className="mb-4">
+                    <form className="m-5 grid">
+                        <div className="mb-2">
                             <Label className="block text-gray-600 text-sm font-medium mb-2">Enter New Password</Label>
                             <Input
                                 type="text"
@@ -46,7 +46,7 @@ export default function ResetPassword() {
                         className="w-full h-full object-cover"
                     />
                 </div>
-            </div >
+            </div>
         </ div >
     );
 } 
