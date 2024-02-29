@@ -3,9 +3,23 @@ const { User } = require("../models/userModel");
 const jwt = require("jsonwebtoken");
 const bcry = require("bcrypt");
 
-//  @access Private
-//  @desc Login Method
-//  @path cpp/user/login
+const generateAccessAndRefreshToken = async () => {
+  try {
+    const user = await User.findOne();
+    const accessToken = await generateAccessToken();
+    const refreshToken = await generateRefreshToken();
+    user.refreshToken = refreshToken;
+    await user.save({ validateBeforeSave: false });
+
+    return { accessToken, refreshToken };
+  } catch (error) {
+    res.send(500).json({ message: "Something Went Wrong!" });
+  }
+};
+
+//@access Private
+//@desc Login Method
+//@path cpp/user/login
 const login = asyncHandler(async (req, res) => {
   const { email, type, password } = req.body;
   if (!email || !type || !password)
@@ -31,9 +45,9 @@ const login = asyncHandler(async (req, res) => {
   } else return res.send(400).json({ message: "Incorrect Email or Password" });
 });
 
-//  @access Private
-//  @desc Logout Method
-//  @path cpp/user/logout
+//@access Private
+//@desc Logout Method
+//@path cpp/user/logout
 const logout = asyncHandler(async (req, res) => {
   await User.findByIdAndUpdate(
     req.user._id,
@@ -44,6 +58,7 @@ const logout = asyncHandler(async (req, res) => {
       new: true,
     }
   );
+  res.status(200).json({ message: "Logged out Successfully." });
 });
 
 //@access Private
@@ -75,7 +90,7 @@ const refreshAccessToken = asyncHandler(async (req, res) => {
     const { accessToken, refreshToken } = await generateAccessAndRefreshToken(
       user._id
     );
-    return res.status(201).json({ accessToken, refreshToken });
+    return res.status(200).json({ accessToken, refreshToken });
   } catch (error) {
     return res.status(401).json({ message: "Unauthorized Request" });
   }
