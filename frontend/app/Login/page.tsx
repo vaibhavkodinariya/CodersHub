@@ -13,6 +13,7 @@ import { userLogin } from "@/services/service";
 import { useToast } from "@/components/ui/use-toast";
 import { Toaster } from "@/components/ui/toaster";
 import { Icons } from "@/components/ui/icons";
+import Router from 'next/router';
 
 export default function Login() {
     const [email, setEmail] = useState<string>('')
@@ -20,6 +21,7 @@ export default function Login() {
     const [errorMessagePassword, setErrorMessagePassword] = useState<string>('')
     const [errorMessageEmail, setErrorMessageEmail] = useState<string>('')
     const { toast } = useToast()
+
     const onChangeEmail = (e: React.ChangeEvent<HTMLInputElement>) => {
         const emailPattern = /^\w+@[a-zA-Z_]+?\.[a-zA-Z]{2,3}$/;
         setEmail(e.target.value)
@@ -60,7 +62,9 @@ export default function Login() {
                     description: data.message,
                 })
             } else {
-                // @todo set localstorage
+                localStorage.setItem("accessToken", data.accessToken!);
+                sessionStorage.setItem("refreshToken", data.refreshToken!);
+                Router.push('/');
             }
         },
     })
@@ -78,6 +82,7 @@ export default function Login() {
                 mutation.mutate(sendData)
         }
     }
+
     return (
         <div className="flex items-center justify-center h-screen bg-cover bg-center relative" style={{ backgroundImage: "linear-gradient(rgba(0,0,0,0.5), rgba(0,0,0,0.5)), url('/login.jpg')" }} >
             <div className="bg-white rounded-xl overflow-hidden shadow-xl flex flex-col sm:flex-row" >

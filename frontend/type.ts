@@ -9,7 +9,6 @@ export interface SendResponse {
   email: string;
   password: string;
 }
-
 export interface User {
   firstName: string;
   middleName: string;
