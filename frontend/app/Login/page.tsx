@@ -8,13 +8,18 @@ import Link from "next/link";
 import { Label } from "@/components/ui/label";
 import { useState } from "react";
 import { SendResponse } from "@/type";
+import { useMutation } from "@tanstack/react-query";
+import { userLogin } from "@/services/service";
+import { useToast } from "@/components/ui/use-toast";
+import { Toaster } from "@/components/ui/toaster";
+import { Icons } from "@/components/ui/icons";
 
 export default function Login() {
     const [email, setEmail] = useState<string>('')
     const [password, setPassword] = useState<string>('')
     const [errorMessagePassword, setErrorMessagePassword] = useState<string>('')
     const [errorMessageEmail, setErrorMessageEmail] = useState<string>('')
-
+    const { toast } = useToast()
     const onChangeEmail = (e: React.ChangeEvent<HTMLInputElement>) => {
         const emailPattern = /^\w+@[a-zA-Z_]+?\.[a-zA-Z]{2,3}$/;
         setEmail(e.target.value)
@@ -46,6 +51,20 @@ export default function Login() {
         }
     }
 
+    const mutation = useMutation({
+        mutationFn: userLogin,
+        onSuccess: (data, variables, context) => {
+            if (data.success == false) {
+                toast({
+                    variant: "destructive",
+                    description: data.message,
+                })
+            } else {
+                // @todo set localstorage
+            }
+        },
+    })
+
     const sendData: SendResponse = {
         email, password
     }
@@ -55,17 +74,14 @@ export default function Login() {
         if (!email && !password) {
             setErrorMessagePassword("Email or Password must not be Empty.")
         } else {
-            console.log(sendData)
-            // if (!errorMessageEmail && !errorMessagePassword)
-            // mutation.mutate(requestData)
-
+            if (!errorMessageEmail && !errorMessagePassword)
+                mutation.mutate(sendData)
         }
     }
-
     return (
         <div className="flex items-center justify-center h-screen bg-cover bg-center relative" style={{ backgroundImage: "linear-gradient(rgba(0,0,0,0.5), rgba(0,0,0,0.5)), url('/login.jpg')" }} >
             <div className="bg-white rounded-xl overflow-hidden shadow-xl flex flex-col sm:flex-row" >
-                <div className="flex-1 p-6">
+                <div className="flex-1 p-6 mb-14 mt-14">
                     <h4 className="font-semibold mb-6 text-center">Welcome to CodersHub</h4>
                     <hr />
                     <br />
@@ -78,6 +94,7 @@ export default function Login() {
                                 placeholder="Enter Email"
                                 value={email}
                                 onChange={onChangeEmail}
+                                disabled={mutation.isPending}
                             />
                         </div>
                         <div style={{ color: "red", fontSize: "12px" }}><b>{errorMessageEmail}</b></div>
@@ -90,16 +107,22 @@ export default function Login() {
                                 value={password}
                                 onChange={onChangePassword}
                                 autoCapitalize="none"
+                                disabled={mutation.isPending}
                             />
                         </div>
                         <div style={{ color: "red", fontSize: "12px" }}> <b>{errorMessagePassword}</b></div>
                         <div>
                             <Checkbox className="float-start mr-2" /><Label className="text-sm font-serif float-left">Keep me logged in</Label> <Link href={""} className="text-sm font-serif float-end">Forgot password?</Link>
                         </div>
+                        <Toaster />
                         <Button
                             type="submit"
+                            disabled={mutation.isPending}
                             className="bg-blue-500 text-white w-full py-2 rounded-md hover:bg-blue-600 focus:outline-none"
                         >
+                            {mutation.isPending && (
+                                <Icons.spinner className="mr-2 h-4 w-4 animate-spin" />
+                            )}
                             Login
                         </Button>
                     </form>
@@ -118,7 +141,7 @@ export default function Login() {
                         className="w-full h-full object-cover"
                     />
                 </div>
-            </div >
-        </ div >
+            </div>
+        </div>
     );
 } 
