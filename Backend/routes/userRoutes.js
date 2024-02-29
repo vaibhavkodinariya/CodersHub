@@ -1,7 +1,14 @@
 const express = require("express");
-const { Login } = require("../controllers/userController");
+const {
+  login,
+  logout,
+  refreshAccessToken,
+} = require("../controllers/userController");
+const { verifyJWT } = require("../middleware/authMiddleware");
 const router = express.Router();
 
-router.post("/login", Login);
+router.post("/login", login);
+router.post("/logout", verifyJWT, logout);
+router.post("/refresh", refreshAccessToken);
 
 module.exports = router;
