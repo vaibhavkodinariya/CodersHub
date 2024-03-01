@@ -1,5 +1,5 @@
 const asyncHandler = require("express-async-handler");
-const { User } = require("../models/userModel");
+const User = require("../models/userModel");
 const jwt = require("jsonwebtoken");
 const bcry = require("bcrypt");
 
@@ -25,24 +25,29 @@ const login = asyncHandler(async (req, res) => {
   if (!email || !type || !password)
     return res.send(400).json({ message: "Please provide all the details" });
 
-  const user = await User.findOne({ email }).select("-refreshToken");
-  if (user && (await bcry.compare(password, user.password))) {
-    const { accessToken, refreshToken } = await generateAccessAndRefreshToken(
-      user._id
-    );
-    const details = {
-      firstName: user.firstName,
-      middleName: user.middleName,
-      lastName: user.lastName,
-      type: user.type,
-    };
-    return res.status(201).json({
-      success: true,
-      credentials: details,
-      accessToken,
-      refreshToken,
-    });
-  } else return res.send(400).json({ message: "Incorrect Email or Password" });
+  try {
+    const user = await User.findOne({ email }).select("-refreshToken");
+    if (user && (await bcry.compare(password, user.password))) {
+      const { accessToken, refreshToken } = await generateAccessAndRefreshToken(
+        user._id
+      );
+      const details = {
+        firstName: user.firstName,
+        middleName: user.middleName,
+        lastName: user.lastName,
+        type: user.type,
+      };
+      return res.status(201).json({
+        success: true,
+        credentials: details,
+        accessToken,
+        refreshToken,
+      });
+    } else
+      return res.send(400).json({ message: "Incorrect Email or Password" });
+  } catch (error) {
+    return res.send(500).json({ message: "Bad Request" });
+  }
 });
 
 //@access Private
@@ -58,13 +63,62 @@ const logout = asyncHandler(async (req, res) => {
       new: true,
     }
   );
-  res.status(200).json({ message: "Logged out Successfully." });
+  return res.status(200).json({ message: "Logged out Successfully." });
 });
 
 //@access Private
 //@desc Registered Method
 //@path cpp/user
-const register = asyncHandler(async (req, res) => {});
+const register = asyncHandler(async (req, res) => {
+  const {
+    instituteName,
+    contactNumber,
+    pincode,
+    password,
+    email,
+    city,
+    state,
+    address,
+  } = req.body;
+
+  if (
+    !instituteName &&
+    !contactNumber &&
+    !pincode &&
+    !password &&
+    !email &&
+    !city &&
+    !state &&
+    !address
+  ) {
+    return res.status(400).send("Please fill all fields");
+  } else {
+    try {
+      const user = await User.findOne({ email });
+      if (user) {
+        return res.status(400).json({ message: "Email Already Registered" });
+      } else {
+        const salt = await bcry.genSalt(10);
+        const hashPassword = await bcry.hash(password, salt);
+        const createdUser = await User.create({
+          institute: instituteName,
+          contactNumber: contactNumber,
+          address: address,
+          email: email,
+          password: hashPassword,
+          pincode: pincode,
+          city: city,
+          state: state,
+          isInstitute: true,
+        });
+        if (createdUser)
+          return res.status(201).json({ message: "User Created" });
+      }
+    } catch (error) {
+      return res.status(500).json({ message: "Bad Request" });
+    }
+  }
+});
 
 //@access Private
 //@desc Refresh Access Token Method
