@@ -3,7 +3,7 @@ import { RequestResponse } from "@/type";
 
 async function userLogin(creadentials: SendResponse): Promise<RequestResponse> {
     try {
-        const response = await fetch(`${process.env.NEXT_PUBLIC_API_URL}/user/login`, {
+        const response = await fetch(`${process.env.API_URL}${process.env.LOGIN}`, {
             method: 'POST',
             headers: {
                 'Content-Type': 'application/json',
