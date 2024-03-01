@@ -9,6 +9,10 @@ import { useState } from "react";
 import { User } from "@/type";
 import { useToast } from "@/components/ui/use-toast";
 import { Toaster } from "@/components/ui/toaster";
+import { useMutation } from "@tanstack/react-query";
+import { userRegister } from "@/services/service";
+import Router from "next/router";
+import { Icons } from "@/components/ui/icons";
 
 export default function Register() {
     const [email, setEmail] = useState<string>('')
@@ -92,13 +96,26 @@ export default function Register() {
         state: state,
         address: address
     }
+    const mutation = useMutation({
+        mutationFn: userRegister,
+        onSuccess: (data, variables, context) => {
+            if (data.success == false) {
+                toast({
+                    variant: "destructive",
+                    description: data.message,
+                })
+            } else {
+                Router.push('/login');
+            }
+        },
+    })
 
     const onSubmit = (e: React.FormEvent<HTMLFormElement>) => {
         e.preventDefault()
         if (!errorContactNumber && !errorMessageEmail && !errorContactNumber
             && !errorPincode && !errorMessagePassword && city && state && address) {
             if (password == confirmpassword)
-                console.log(sendRegisteredData)
+                mutation.mutate(sendRegisteredData)
             else {
                 toast({
                     style: { fontWeight: "bolder", fontSize: 20 },
@@ -130,6 +147,7 @@ export default function Register() {
                                 placeholder="Institute Name"
                                 name="instititeName"
                                 value={instititeName}
+                                disabled={mutation.isPending}
                                 onChange={(e) => setInstititeName(e.target.value)}
                             />
                         </div>
@@ -141,6 +159,7 @@ export default function Register() {
                                 placeholder="Email Address"
                                 name="email"
                                 value={email}
+                                disabled={mutation.isPending}
                                 onChange={onChangeEmail}
                             />
                             <div className="ml-3 mt-1" style={{ color: "red", fontSize: "12px" }}><b>{errorMessageEmail}</b></div>
@@ -154,6 +173,7 @@ export default function Register() {
                                     placeholder="Contact Number"
                                     name="contactNumber"
                                     value={contactNumber}
+                                    disabled={mutation.isPending}
                                     onChange={onChangeContactNumber}
                                 />
                                 <div className="ml-3 mt-1" style={{ color: "red", fontSize: "12px" }}><b>{errorContactNumber}</b></div>
@@ -166,6 +186,7 @@ export default function Register() {
                                     placeholder="City"
                                     name="city"
                                     value={city}
+                                    disabled={mutation.isPending}
                                     onChange={(e) => setCity(e.target.value)}
                                 />
                             </div>
@@ -179,6 +200,7 @@ export default function Register() {
                                     placeholder="State"
                                     name="state"
                                     value={state}
+                                    disabled={mutation.isPending}
                                     onChange={(e) => setState(e.target.value)}
                                 />
                             </div>
@@ -190,6 +212,7 @@ export default function Register() {
                                     placeholder="Pincode"
                                     name="pincode"
                                     value={pincode}
+                                    disabled={mutation.isPending}
                                     onChange={onChangePincode}
                                 />
                                 <div className="ml-3 mt-1" style={{ color: "red", fontSize: "12px" }}><b>{errorPincode}</b></div>
@@ -203,6 +226,7 @@ export default function Register() {
                                 placeholder="Address"
                                 name="address"
                                 value={address}
+                                disabled={mutation.isPending}
                                 onChange={(e) => setAddress(e.target.value)}
                             />
                         </div>
@@ -214,6 +238,7 @@ export default function Register() {
                                     className="border border-gray-300 p-2 w-full rounded-md focus:outline-none"
                                     placeholder="Password"
                                     value={password}
+                                    disabled={mutation.isPending}
                                     onChange={onChangePassword}
                                 />
                                 <div className="ml-3 mt-1" style={{ color: "red", fontSize: "12px" }}><b>{errorMessagePassword}</b></div>
@@ -226,6 +251,7 @@ export default function Register() {
                                     placeholder="Retype Password"
                                     name="retypePassword"
                                     value={confirmpassword}
+                                    disabled={mutation.isPending}
                                     onChange={(e) => setConfirmPassword(e.target.value)}
                                 />
                             </div>
@@ -235,6 +261,9 @@ export default function Register() {
                             type="submit"
                             className="bg-blue-500 text-white w-full py-2 rounded-3xl hover:bg-blue-600 focus:outline-none"
                         >
+                            {mutation.isPending && (
+                                <Icons.spinner className="mr-2 h-4 w-4 animate-spin" />
+                            )}
                             Register
                         </Button>
                     </form>

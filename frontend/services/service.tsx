@@ -1,4 +1,4 @@
-import { SendResponse } from "@/type";
+import { SendResponse, User } from "@/type";
 import { RequestResponse } from "@/type";
 
 async function userLogin(creadentials: SendResponse): Promise<RequestResponse> {
@@ -22,4 +22,25 @@ async function userLogin(creadentials: SendResponse): Promise<RequestResponse> {
     }
 }
 
-export { userLogin }
+async function userRegister(userData: User): Promise<RequestResponse> {
+    try {
+        const response = await fetch(`${process.env.API_URL}${process.env.REGISTER}`, {
+            method: 'POST',
+            headers: {
+                'Content-Type': 'application/json',
+            },
+            body: JSON.stringify(userData),
+        });
+        const jsonResponse = await response.json()
+        if (response.status == 201) {
+            const jsonData: RequestResponse = { success: jsonResponse.success, message: jsonResponse.message }
+            return jsonData
+        } else {
+            return { success: jsonResponse.success, message: jsonResponse.message }
+        }
+    } catch (e) {
+        return { success: false, message: "Something Went Wrong" }
+    }
+}
+
+export { userLogin, userRegister }
