@@ -270,7 +270,7 @@ export default function Register() {
                     <hr />
                     <div className="text-center">
                         <Label className="text-sm font-serif">Already have account?</Label>
-                        <Link href={""} className="text-sm font-serif text-blue-500"> Login</Link>
+                        <Link href={"/Login"} className="text-sm font-serif text-blue-500"> Login</Link>
                     </div>
                 </div>
                 <div className="w-50 md:order-2">

@@ -24,7 +24,8 @@ async function userLogin(creadentials: SendResponse): Promise<RequestResponse> {
 
 async function userRegister(userData: User): Promise<RequestResponse> {
     try {
-        const response = await fetch(`${process.env.API_URL}${process.env.REGISTER}`, {
+        console.log(`${process.env.NEXT_PUBLIC_API_URL}${process.env.NEXT_PUBLIC_REGISTER}`);
+        const response = await fetch(`${process.env.NEXT_PUBLIC_API_URL}${process.env.NEXT_PUBLIC_REGISTER}`, {
             method: 'POST',
             headers: {
                 'Content-Type': 'application/json',
@@ -39,6 +40,7 @@ async function userRegister(userData: User): Promise<RequestResponse> {
             return { success: jsonResponse.success, message: jsonResponse.message }
         }
     } catch (e) {
+        console.log("ERROR Code", e)
         return { success: false, message: "Something Went Wrong" }
     }
 }
