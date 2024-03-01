@@ -10,8 +10,17 @@ export interface SendResponse {
   password: string;
 }
 export interface User {
-  firstName: string;
-  middleName: string;
-  lastName: string;
-  type: string;
+  id?: number;
+  instituteName?: string;
+  email?: string;
+  contactNumber?: string;
+  state?: string;
+  city?: string;
+  pincode?: string;
+  address?: string;
+  password?: string;
+  firstName?: string;
+  middleName?: string;
+  lastName?: string;
+  type?: string;
 }
