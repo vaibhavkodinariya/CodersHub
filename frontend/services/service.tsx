@@ -12,13 +12,13 @@ async function userLogin(creadentials: SendResponse): Promise<RequestResponse> {
         });
         const jsonResponse = await response.json()
         if (response.ok) {
-            const jsonData: RequestResponse = { success: jsonResponse.success, credentials: jsonResponse.details, accessToken: jsonResponse.accessToken, refreshToken: jsonResponse.refreshToken }
+            const jsonData: RequestResponse = { status: response.status, credentials: jsonResponse.details, accessToken: jsonResponse.accessToken, refreshToken: jsonResponse.refreshToken }
             return jsonData
         } else {
-            return { success: jsonResponse.success, message: jsonResponse.message }
+            return { status: response.status, message: jsonResponse.message }
         }
     } catch (e) {
-        return { success: false, message: "Something Went Wrong" }
+        return { status: 500, message: "Something Went Wrong" }
     }
 }
 
@@ -33,15 +33,13 @@ async function userRegister(userData: User): Promise<RequestResponse> {
             body: JSON.stringify(userData),
         });
         const jsonResponse = await response.json()
-        if (response.status == 201) {
-            const jsonData: RequestResponse = { success: jsonResponse.success, message: jsonResponse.message }
-            return jsonData
+        if (response.status == 400) {
+            return { status: response.status, message: jsonResponse.message }
         } else {
-            return { success: jsonResponse.success, message: jsonResponse.message }
+            return { status: response.status, message: jsonResponse.message }
         }
     } catch (e) {
-        console.log("ERROR Code", e)
-        return { success: false, message: "Something Went Wrong" }
+        return { status: 500, message: "Something Went Wrong" }
     }
 }
 

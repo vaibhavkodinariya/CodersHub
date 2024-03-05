@@ -56,7 +56,7 @@ export default function Login() {
     const mutation = useMutation({
         mutationFn: userLogin,
         onSuccess: (data, variables, context) => {
-            if (data.success == false) {
+            if (data.status == 400) {
                 toast({
                     variant: "destructive",
                     description: data.message,
