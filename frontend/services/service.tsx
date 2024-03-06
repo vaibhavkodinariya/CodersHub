@@ -3,7 +3,7 @@ import { RequestResponse } from "@/type";
 
 async function userLogin(creadentials: SendResponse): Promise<RequestResponse> {
     try {
-        const response = await fetch(`${process.env.API_URL}${process.env.LOGIN}`, {
+        const response = await fetch(`${process.env.NEXT_PUBLIC_API_URL}${process.env.NEXT_PUBLIC_LOGIN}`, {
             method: 'POST',
             headers: {
                 'Content-Type': 'application/json',
@@ -18,13 +18,12 @@ async function userLogin(creadentials: SendResponse): Promise<RequestResponse> {
             return { status: response.status, message: jsonResponse.message }
         }
     } catch (e) {
-        return { status: 500, message: "Something Went Wrong" }
+        return { status: 400, message: "Something Went Wrong" }
     }
 }
 
 async function userRegister(userData: User): Promise<RequestResponse> {
     try {
-        console.log(`${process.env.NEXT_PUBLIC_API_URL}${process.env.NEXT_PUBLIC_REGISTER}`);
         const response = await fetch(`${process.env.NEXT_PUBLIC_API_URL}${process.env.NEXT_PUBLIC_REGISTER}`, {
             method: 'POST',
             headers: {

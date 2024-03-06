@@ -18,39 +18,14 @@ import Router from 'next/router';
 export default function Login() {
     const [email, setEmail] = useState<string>('')
     const [password, setPassword] = useState<string>('')
-    const [errorMessagePassword, setErrorMessagePassword] = useState<string>('')
-    const [errorMessageEmail, setErrorMessageEmail] = useState<string>('')
     const { toast } = useToast()
 
     const onChangeEmail = (e: React.ChangeEvent<HTMLInputElement>) => {
-        const emailPattern = /^\w+@[a-zA-Z_]+?\.[a-zA-Z]{2,3}$/;
         setEmail(e.target.value)
-        if (!email.match(emailPattern)) {
-            setErrorMessageEmail("Email Should be in appropriate Format.")
-        } else {
-            setErrorMessageEmail("")
-        }
     }
 
     const onChangePassword = (e: React.ChangeEvent<HTMLInputElement>) => {
         setPassword(e.target.value)
-        const lowerCase = /[a-z]/g;
-        const upperCase = /[A-Z]/g;
-        const numbers = /[0-9]/g;
-        const specialSymbols = /[^A-Za-z 0-9]/g;
-        if (!password.match(lowerCase)) {
-            setErrorMessagePassword("Password must contains atleast one lowercase letter.");
-        } else if (!password.match(upperCase)) {
-            setErrorMessagePassword("Password must contains atleast one uppercase letter.");
-        } else if (!password.match(numbers)) {
-            setErrorMessagePassword("Password must contains atleast one digit.");
-        } else if (password.length <= 8) {
-            setErrorMessagePassword("Password must be minimum 8 characters long.");
-        } else if (!password.match(specialSymbols)) {
-            setErrorMessagePassword("Password must contains atleast one special character.");
-        } else {
-            setErrorMessagePassword('')
-        }
     }
 
     const mutation = useMutation({
@@ -73,13 +48,15 @@ export default function Login() {
         email, password
     }
 
-    async function onSubmit(event: React.SyntheticEvent) {
+    function onSubmit(event: React.SyntheticEvent) {
         event.preventDefault();
         if (!email && !password) {
-            setErrorMessagePassword("Email or Password must not be Empty.")
+            toast({
+                variant: "destructive",
+                description: "Email or Password must not be Empty.",
+            })
         } else {
-            if (!errorMessageEmail && !errorMessagePassword)
-                mutation.mutate(sendData)
+            mutation.mutate(sendData)
         }
     }
 
@@ -102,7 +79,6 @@ export default function Login() {
                                 disabled={mutation.isPending}
                             />
                         </div>
-                        <div style={{ color: "red", fontSize: "12px" }}><b>{errorMessageEmail}</b></div>
                         <div className="mb-4">
                             <Label className="block text-gray-600 text-sm font-medium mb-2">Password</Label>
                             <Input
@@ -115,7 +91,6 @@ export default function Login() {
                                 disabled={mutation.isPending}
                             />
                         </div>
-                        <div style={{ color: "red", fontSize: "12px" }}> <b>{errorMessagePassword}</b></div>
                         <div>
                             <Checkbox className="float-start mr-2" /><Label className="text-sm font-serif float-left">Keep me logged in</Label> <Link href={""} className="text-sm font-serif float-end">Forgot password?</Link>
                         </div>
