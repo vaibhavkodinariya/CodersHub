@@ -37,6 +37,7 @@ export default function Login() {
                     description: data.message,
                 })
             } else {
+                console.log(data)
                 localStorage.setItem("accessToken", data.accessToken!);
                 sessionStorage.setItem("refreshToken", data.refreshToken!);
                 Router.push('/');

@@ -12,7 +12,7 @@ async function userLogin(creadentials: SendResponse): Promise<RequestResponse> {
         });
         const jsonResponse = await response.json()
         if (response.ok) {
-            const jsonData: RequestResponse = { status: response.status, credentials: jsonResponse.details, accessToken: jsonResponse.accessToken, refreshToken: jsonResponse.refreshToken }
+            const jsonData: RequestResponse = { status: response.status, role: jsonResponse.role, accessToken: jsonResponse.accessToken, refreshToken: jsonResponse.refreshToken }
             return jsonData
         } else {
             return { status: response.status, message: jsonResponse.message }

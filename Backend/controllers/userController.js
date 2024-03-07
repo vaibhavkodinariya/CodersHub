@@ -3,50 +3,44 @@ const User = require("../models/userModel");
 const jwt = require("jsonwebtoken");
 const bcry = require("bcrypt");
 
-const generateAccessAndRefreshToken = async () => {
+const generateAccessAndRefreshToken = asyncHandler(async (req, res) => {
   try {
     const user = await User.findOne();
-    const accessToken = await generateAccessToken();
-    const refreshToken = await generateRefreshToken();
+    const accessToken = await user.generateAccessToken();
+    const refreshToken = await user.generateRefreshToken();
     user.refreshToken = refreshToken;
     await user.save({ validateBeforeSave: false });
-
     return { accessToken, refreshToken };
   } catch (error) {
-    res.send(500).json({ message: "Something Went Wrong!" });
+    console.log("Error in generateAccessAndRefreshToken", error);
+    return res.status(500).json({ message: "Something Went Wrong!" });
   }
-};
+});
 
 //@access Private
 //@desc Login Method
 //@path cpp/user/login
 const login = asyncHandler(async (req, res) => {
-  const { email, type, password } = req.body;
-  if (!email || !type || !password)
-    return res.send(400).json({ message: "Please provide all the details" });
-
+  const { email, password } = req.body;
+  if (!email || !password)
+    return res.status(400).json({ message: "Please provide all the details" });
   try {
     const user = await User.findOne({ email }).select("-refreshToken");
     if (user && (await bcry.compare(password, user.password))) {
       const { accessToken, refreshToken } = await generateAccessAndRefreshToken(
         user._id
       );
-      const details = {
-        firstName: user.firstName,
-        middleName: user.middleName,
-        lastName: user.lastName,
-        type: user.type,
-      };
+      console.log(user.role);
       return res.status(201).json({
-        success: true,
-        credentials: details,
         accessToken,
         refreshToken,
+        role: user.role,
       });
     } else
-      return res.send(400).json({ message: "Incorrect Email or Password" });
+      return res.status(400).json({ message: "Incorrect Email or Password" });
   } catch (error) {
-    return res.send(500).json({ message: "Bad Request" });
+    console.log(error);
+    return res.status(500).json({ message: "Bad Request" });
   }
 });
 

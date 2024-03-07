@@ -1,7 +1,7 @@
 export interface RequestResponse {
   status: number;
   message?: string;
-  credentials?: User;
+  role?: string;
   accessToken?: string;
   refreshToken?: string;
 }
