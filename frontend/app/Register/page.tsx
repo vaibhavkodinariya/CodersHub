@@ -11,7 +11,7 @@ import { useToast } from "@/components/ui/use-toast";
 import { Toaster } from "@/components/ui/toaster";
 import { useMutation } from "@tanstack/react-query";
 import { userRegister } from "@/services/service";
-import Router from "next/router";
+import { useRouter } from 'next/navigation';
 import { Icons } from "@/components/ui/icons";
 
 export default function Register() {
@@ -25,6 +25,7 @@ export default function Register() {
     const [address, setAddress] = useState<string>('')
     const [pincode, setPincode] = useState<string>('')
     const { toast } = useToast()
+    const { push } = useRouter();
 
     const [errorMessagePassword, setErrorMessagePassword] = useState<string>('')
     const [errorMessageEmail, setErrorMessageEmail] = useState<string>('')
@@ -59,7 +60,7 @@ export default function Register() {
         if (pincode.length > 5)
             setErrorPincode("Pincode should not exceed 6 digits.");
         else if (pincode.length < 5)
-            setErrorPincode("Pincode must have 10 digits.");
+            setErrorPincode("Pincode must have 6 digits.");
         else if (pincode.length == 5)
             setErrorPincode("");
     }
@@ -99,13 +100,19 @@ export default function Register() {
     const mutation = useMutation({
         mutationFn: userRegister,
         onSuccess: (data, variables, context) => {
-            if (data.success == false) {
+            if (data.status == 400) {
                 toast({
                     variant: "destructive",
                     description: data.message,
                 })
             } else {
-                Router.push('/login');
+                toast({
+                    style: { backgroundColor: "#22bb33", border: "none", fontWeight: "bolder" },
+                    description: data.message,
+                })
+                setTimeout(() => {
+                    push('/Login');
+                }, 2000)
             }
         },
     })
@@ -234,7 +241,7 @@ export default function Register() {
                             <div className="w-64 mr-8">
                                 <Label className="block text-gray-600 text-sm font-medium mb-2">Password</Label>
                                 <Input
-                                    type="text"
+                                    type="password"
                                     className="border border-gray-300 p-2 w-full rounded-md focus:outline-none"
                                     placeholder="Password"
                                     value={password}
@@ -246,7 +253,7 @@ export default function Register() {
                             <div className="w-60">
                                 <Label className="block text-gray-600 text-sm font-medium mb-2">Retype Password</Label>
                                 <Input
-                                    type="text"
+                                    type="password"
                                     className="border border-gray-300 p-2 w-full rounded-md focus:outline-none"
                                     placeholder="Retype Password"
                                     name="retypePassword"

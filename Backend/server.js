@@ -10,7 +10,7 @@ app.use(cors());
 connectDB();
 app.use(express.urlencoded({ extended: false }));
 
-app.use("cpp/user", require(`./routes/userRoutes`));
+app.use("/cpp/user", require(`./routes/userRoutes`));
 
 app.listen(port, () => {
   console.log("Server Started and Port Number", port);

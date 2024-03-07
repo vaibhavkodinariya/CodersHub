@@ -1,5 +1,5 @@
 export interface RequestResponse {
-  success: boolean;
+  status: number;
   message?: string;
   credentials?: User;
   accessToken?: string;
